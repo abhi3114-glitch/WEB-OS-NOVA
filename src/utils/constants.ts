@@ -2,25 +2,25 @@ export const APPS = [
   {
     id: 'file-explorer',
     name: 'File Explorer',
-    icon: '/images/FileExplorer.jpg',
+    icon: '/assets/app-icon-files.png',
     description: 'Browse and manage your files',
   },
   {
     id: 'notes',
     name: 'Notes',
-    icon: '/images/Notes.jpg',
+    icon: '/assets/app-icon-notes.png',
     description: 'Take notes and write documents',
   },
   {
     id: 'calculator',
     name: 'Calculator',
-    icon: '/images/Calculator.jpg',
+    icon: '/assets/app-icon-calculator.png',
     description: 'Perform calculations',
   },
   {
     id: 'terminal',
     name: 'Terminal',
-    icon: '/images/Terminal.jpg',
+    icon: '/assets/app-icon-terminal.png',
     description: 'Command line interface',
   },
   {
@@ -38,13 +38,13 @@ export const APPS = [
   {
     id: 'settings',
     name: 'Settings',
-    icon: '/assets/app-icon-files_variant_2.png',
+    icon: '/assets/app-icon-files_variant_1.png',
     description: 'Configure system settings',
   },
   {
     id: 'app-store',
     name: 'App Store',
-    icon: '/assets/app-icon-files_variant_3.png',
+    icon: '/assets/app-icon-calculator_variant_1.png',
     description: 'Download and install apps',
   },
 ];
@@ -53,17 +53,17 @@ export const WALLPAPERS = [
   {
     id: 'default',
     name: 'Default',
-    url: '/images/Wallpaper.jpg',
+    url: '/assets/wallpaper-default.jpg',
   },
   {
     id: 'space',
     name: 'Space',
-    url: '/images/SpaceWallpaper.jpg',
+    url: '/assets/wallpaper-space.jpg',
   },
   {
     id: 'waves',
     name: 'Waves',
-    url: '/images/Waves.jpg',
+    url: '/assets/wallpaper-waves.jpg',
   },
 ];
 

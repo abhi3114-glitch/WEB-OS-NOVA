@@ -10,12 +10,14 @@ import { seedInitialData } from '@/utils/db';
 import NotesApp from '@/apps/NotesApp';
 import CalculatorApp from '@/apps/CalculatorApp';
 import TerminalApp from '@/apps/TerminalApp';
+import FileExplorerApp from '@/apps/FileExplorerApp';
+import TodoApp from '@/apps/TodoApp';
 
 export default function Index() {
   const [isBooting, setIsBooting] = useState(true);
   const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const { windows, openWindow } = useWindowStore();
+  const { windows } = useWindowStore();
 
   useEffect(() => {
     // Initialize database
@@ -34,6 +36,10 @@ export default function Index() {
         return <CalculatorApp />;
       case 'terminal':
         return <TerminalApp />;
+      case 'file-explorer':
+        return <FileExplorerApp />;
+      case 'todo':
+        return <TodoApp />;
       default:
         return (
           <div className="h-full flex items-center justify-center text-white">

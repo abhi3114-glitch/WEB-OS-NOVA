@@ -3,6 +3,7 @@ import { useFileSystemStore } from '@/stores/fileSystemStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { FileItem } from '@/utils/db';
 import {
   Folder,
   File,
@@ -22,63 +23,86 @@ import {
 } from '@/components/ui/context-menu';
 
 export default function FileExplorerApp() {
-  const { files, folders, createFile, createFolder, deleteFile, deleteFolder } = useFileSystemStore();
-  const [currentPath, setCurrentPath] = useState('/');
+  const { 
+    currentFolderId, 
+    setCurrentFolder, 
+    createFile, 
+    createFolder, 
+    deleteFile, 
+    getFiles,
+    searchFiles 
+  } = useFileSystemStore();
+  
+  const [files, setFiles] = useState<FileItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [selectedItem, setSelectedItem] = useState<number | null>(null);
+  const [folderPath, setFolderPath] = useState<Array<{ id: number | null; name: string }>>([
+    { id: null, name: 'Home' }
+  ]);
 
-  const getCurrentFolderItems = () => {
-    const currentFolders = folders.filter((f) => f.parentId === currentPath);
-    const currentFiles = files.filter((f) => f.parentId === currentPath);
-    
+  useEffect(() => {
+    loadFiles();
+  }, [currentFolderId, searchQuery]);
+
+  const loadFiles = async () => {
     if (searchQuery) {
-      return {
-        folders: currentFolders.filter((f) => f.name.toLowerCase().includes(searchQuery.toLowerCase())),
-        files: currentFiles.filter((f) => f.name.toLowerCase().includes(searchQuery.toLowerCase())),
-      };
+      const results = await searchFiles(searchQuery);
+      setFiles(results);
+    } else {
+      const items = await getFiles(currentFolderId);
+      setFiles(items);
     }
-    
-    return { folders: currentFolders, files: currentFiles };
   };
 
-  const { folders: displayFolders, files: displayFiles } = getCurrentFolderItems();
-
-  const handleNewFolder = () => {
+  const handleNewFolder = async () => {
     const name = prompt('Enter folder name:');
     if (name) {
-      createFolder(name, currentPath);
+      await createFolder(name, currentFolderId);
+      loadFiles();
     }
   };
 
-  const handleNewFile = () => {
+  const handleNewFile = async () => {
     const name = prompt('Enter file name:');
     if (name) {
-      createFile(name, '', 'text', currentPath);
+      await createFile(name, '', currentFolderId);
+      loadFiles();
     }
   };
 
-  const handleDelete = (id: string, type: 'file' | 'folder') => {
-    if (confirm(`Are you sure you want to delete this ${type}?`)) {
-      if (type === 'file') {
-        deleteFile(id);
-      } else {
-        deleteFolder(id);
-      }
+  const handleDelete = async (id: number) => {
+    if (confirm('Are you sure you want to delete this item?')) {
+      await deleteFile(id);
+      loadFiles();
     }
   };
 
-  const getFileIcon = (type: string) => {
-    switch (type) {
-      case 'image':
-        return <ImageIcon className="w-5 h-5 text-blue-400" />;
-      case 'text':
-        return <FileText className="w-5 h-5 text-green-400" />;
-      default:
-        return <File className="w-5 h-5 text-gray-400" />;
+  const handleFolderOpen = (folder: FileItem) => {
+    if (folder.id) {
+      setCurrentFolder(folder.id);
+      setFolderPath([...folderPath, { id: folder.id, name: folder.name }]);
     }
   };
 
-  const breadcrumbs = currentPath.split('/').filter(Boolean);
+  const handleBreadcrumbClick = (index: number) => {
+    const newPath = folderPath.slice(0, index + 1);
+    setFolderPath(newPath);
+    setCurrentFolder(newPath[newPath.length - 1].id);
+  };
+
+  const getFileIcon = (file: FileItem) => {
+    if (file.type === 'folder') {
+      return <Folder className="w-12 h-12 text-[#FF006E]" />;
+    }
+    const ext = file.name.split('.').pop()?.toLowerCase();
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext || '')) {
+      return <ImageIcon className="w-12 h-12 text-blue-400" />;
+    }
+    if (['txt', 'md', 'json'].includes(ext || '')) {
+      return <FileText className="w-12 h-12 text-green-400" />;
+    }
+    return <File className="w-12 h-12 text-gray-400" />;
+  };
 
   return (
     <div className="h-full flex flex-col bg-[#0A0A0A] text-white">
@@ -87,7 +111,10 @@ export default function FileExplorerApp() {
         <Button
           size="sm"
           variant="ghost"
-          onClick={() => setCurrentPath('/')}
+          onClick={() => {
+            setCurrentFolder(null);
+            setFolderPath([{ id: null, name: 'Home' }]);
+          }}
           className="text-white hover:bg-white/10"
         >
           <Home className="w-4 h-4" />
@@ -124,20 +151,14 @@ export default function FileExplorerApp() {
 
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 px-4 py-2 text-sm text-white/60 border-b border-white/10">
-        <button
-          onClick={() => setCurrentPath('/')}
-          className="hover:text-white transition-colors"
-        >
-          Home
-        </button>
-        {breadcrumbs.map((crumb, index) => (
+        {folderPath.map((crumb, index) => (
           <div key={index} className="flex items-center gap-2">
-            <ChevronRight className="w-4 h-4" />
+            {index > 0 && <ChevronRight className="w-4 h-4" />}
             <button
-              onClick={() => setCurrentPath('/' + breadcrumbs.slice(0, index + 1).join('/'))}
+              onClick={() => handleBreadcrumbClick(index)}
               className="hover:text-white transition-colors"
             >
-              {crumb}
+              {crumb.name}
             </button>
           </div>
         ))}
@@ -146,50 +167,27 @@ export default function FileExplorerApp() {
       {/* File List */}
       <ScrollArea className="flex-1 p-4">
         <div className="grid grid-cols-4 gap-4">
-          {/* Folders */}
-          {displayFolders.map((folder) => (
-            <ContextMenu key={folder.id}>
-              <ContextMenuTrigger>
-                <div
-                  className={`flex flex-col items-center gap-2 p-4 rounded-lg cursor-pointer hover:bg-white/5 transition-colors ${
-                    selectedItem === folder.id ? 'bg-white/10' : ''
-                  }`}
-                  onClick={() => setSelectedItem(folder.id)}
-                  onDoubleClick={() => setCurrentPath(folder.id)}
-                >
-                  <Folder className="w-12 h-12 text-[#FF006E]" />
-                  <span className="text-sm text-center truncate w-full">{folder.name}</span>
-                </div>
-              </ContextMenuTrigger>
-              <ContextMenuContent className="bg-[#1A1A1A]/95 backdrop-blur-xl border-white/10">
-                <ContextMenuItem
-                  onClick={() => handleDelete(folder.id, 'folder')}
-                  className="text-white hover:bg-white/10"
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete
-                </ContextMenuItem>
-              </ContextMenuContent>
-            </ContextMenu>
-          ))}
-
-          {/* Files */}
-          {displayFiles.map((file) => (
+          {files.map((file) => (
             <ContextMenu key={file.id}>
               <ContextMenuTrigger>
                 <div
                   className={`flex flex-col items-center gap-2 p-4 rounded-lg cursor-pointer hover:bg-white/5 transition-colors ${
                     selectedItem === file.id ? 'bg-white/10' : ''
                   }`}
-                  onClick={() => setSelectedItem(file.id)}
+                  onClick={() => setSelectedItem(file.id || null)}
+                  onDoubleClick={() => {
+                    if (file.type === 'folder') {
+                      handleFolderOpen(file);
+                    }
+                  }}
                 >
-                  {getFileIcon(file.type)}
+                  {getFileIcon(file)}
                   <span className="text-sm text-center truncate w-full">{file.name}</span>
                 </div>
               </ContextMenuTrigger>
               <ContextMenuContent className="bg-[#1A1A1A]/95 backdrop-blur-xl border-white/10">
                 <ContextMenuItem
-                  onClick={() => handleDelete(file.id, 'file')}
+                  onClick={() => file.id && handleDelete(file.id)}
                   className="text-white hover:bg-white/10"
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
@@ -200,7 +198,7 @@ export default function FileExplorerApp() {
           ))}
         </div>
 
-        {displayFolders.length === 0 && displayFiles.length === 0 && (
+        {files.length === 0 && (
           <div className="flex items-center justify-center h-64 text-white/40">
             <p>No files or folders found</p>
           </div>

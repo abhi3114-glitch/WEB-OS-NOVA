@@ -3,8 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Trash2, Plus, Calendar } from 'lucide-react';
-import { useFileSystemStore } from '@/stores/fileSystemStore';
+import { Trash2, Plus } from 'lucide-react';
 
 interface Todo {
   id: string;
@@ -14,11 +13,12 @@ interface Todo {
   dueDate?: string;
 }
 
+const STORAGE_KEY = 'webos-todos';
+
 export default function TodoApp() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodo, setNewTodo] = useState('');
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
-  const { createFile, readFile, updateFile } = useFileSystemStore();
 
   useEffect(() => {
     loadTodos();
@@ -28,24 +28,22 @@ export default function TodoApp() {
     saveTodos();
   }, [todos]);
 
-  const loadTodos = async () => {
+  const loadTodos = () => {
     try {
-      const file = await readFile('todos.json');
-      if (file) {
-        setTodos(JSON.parse(file.content));
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        setTodos(JSON.parse(saved));
       }
     } catch (error) {
-      console.log('No existing todos file');
+      console.error('Failed to load todos:', error);
     }
   };
 
-  const saveTodos = async () => {
-    if (todos.length > 0) {
-      try {
-        await updateFile('todos.json', JSON.stringify(todos, null, 2));
-      } catch (error) {
-        await createFile('todos.json', JSON.stringify(todos, null, 2), 'text', '/');
-      }
+  const saveTodos = () => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+    } catch (error) {
+      console.error('Failed to save todos:', error);
     }
   };
 
@@ -174,10 +172,10 @@ export default function TodoApp() {
 
               {/* Priority Indicator */}
               <div className="flex gap-1">
-                {['low', 'medium', 'high'].map((p) => (
+                {(['low', 'medium', 'high'] as const).map((p) => (
                   <button
                     key={p}
-                    onClick={() => setPriority(todo.id, p as any)}
+                    onClick={() => setPriority(todo.id, p)}
                     className={`w-3 h-3 rounded-full ${
                       todo.priority === p ? getPriorityColor(p) : 'bg-white/20'
                     }`}

@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { APPS } from '@/utils/constants';
 import { useWindowStore } from '@/stores/windowStore';
+import { useAppStore } from '@/stores/appStore';
 import { Search, Power, Settings as SettingsIcon } from 'lucide-react';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
@@ -13,13 +13,18 @@ interface StartMenuProps {
 
 export default function StartMenu({ isOpen, onClose }: StartMenuProps) {
   const { openWindow } = useWindowStore();
+  const { apps } = useAppStore();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredApps = APPS.filter((app) =>
-    app.name.toLowerCase().includes(searchQuery.toLowerCase())
+  // Filter apps: must be installed AND match search query
+  const filteredApps = apps.filter((app) =>
+    app.installed && app.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleAppClick = (app: typeof APPS[0]) => {
+  const pinnedApps = apps.filter(app => app.installed && app.pinned);
+  const allInstalledApps = apps.filter(app => app.installed);
+
+  const handleAppClick = (app: typeof apps[0]) => {
     openWindow(app.id, app.name, app.icon);
     onClose();
   };
@@ -58,31 +63,71 @@ export default function StartMenu({ isOpen, onClose }: StartMenuProps) {
               </div>
             </div>
 
-            {/* Pinned Apps */}
+            {/* Content */}
             <div className="p-6 overflow-y-auto h-[calc(100%-140px)]">
-              <h3 className="text-white/60 text-sm font-medium mb-4">Pinned</h3>
-              <div className="grid grid-cols-4 gap-4">
-                {filteredApps.map((app) => (
-                  <motion.button
-                    key={app.id}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => handleAppClick(app)}
-                    className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-white/10 transition-colors"
-                  >
-                    <div className="w-12 h-12 rounded-xl overflow-hidden">
-                      <img
-                        src={app.icon}
-                        alt={app.name}
-                        className="w-full h-full object-cover"
-                      />
+              {searchQuery ? (
+                // Search Results
+                <div className="grid grid-cols-4 gap-4">
+                  {filteredApps.map((app) => (
+                    <motion.button
+                      key={app.id}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handleAppClick(app)}
+                      className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-white/10 transition-colors"
+                    >
+                      <div className="text-3xl mb-1">{app.icon}</div>
+                      <span className="text-white text-xs text-center">
+                        {app.name}
+                      </span>
+                    </motion.button>
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-8">
+                  {/* Pinned Apps */}
+                  <div>
+                    <h3 className="text-white/60 text-sm font-medium mb-4 px-2">Pinned</h3>
+                    <div className="grid grid-cols-4 gap-4">
+                      {pinnedApps.map((app) => (
+                        <motion.button
+                          key={app.id}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => handleAppClick(app)}
+                          className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-white/10 transition-colors"
+                        >
+                          <div className="text-3xl mb-1">{app.icon}</div>
+                          <span className="text-white text-xs text-center">
+                            {app.name}
+                          </span>
+                        </motion.button>
+                      ))}
                     </div>
-                    <span className="text-white text-xs text-center">
-                      {app.name}
-                    </span>
-                  </motion.button>
-                ))}
-              </div>
+                  </div>
+
+                  {/* All Apps */}
+                  <div>
+                    <h3 className="text-white/60 text-sm font-medium mb-4 px-2">All Apps</h3>
+                    <div className="grid grid-cols-4 gap-4">
+                      {allInstalledApps.map((app) => (
+                        <motion.button
+                          key={app.id}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => handleAppClick(app)}
+                          className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-white/10 transition-colors"
+                        >
+                          <div className="text-3xl mb-1">{app.icon}</div>
+                          <span className="text-white text-xs text-center">
+                            {app.name}
+                          </span>
+                        </motion.button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* User Profile & Power */}
@@ -101,6 +146,7 @@ export default function StartMenu({ isOpen, onClose }: StartMenuProps) {
                 <Button
                   variant="ghost"
                   size="icon"
+                  onClick={() => openWindow('settings', 'Settings', '⚙️')}
                   className="text-white hover:bg-white/10"
                 >
                   <SettingsIcon className="w-4 h-4" />

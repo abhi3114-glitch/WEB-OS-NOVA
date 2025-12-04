@@ -14,11 +14,11 @@ export interface Notification {
 interface NotificationStore {
   notifications: Notification[];
   doNotDisturb: boolean;
-  
+
   addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => void;
   markAsRead: (id: string) => void;
   removeNotification: (id: string) => void;
-  clearAll: () => void;
+  clearNotifications: () => void;
   toggleDoNotDisturb: () => void;
 }
 
@@ -53,7 +53,7 @@ export const useNotificationStore = create<NotificationStore>((set) => ({
     }));
   },
 
-  clearAll: () => {
+  clearNotifications: () => {
     set({ notifications: [] });
   },
 

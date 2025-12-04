@@ -1,13 +1,14 @@
 import { create } from 'zustand';
 import { db, FileItem } from '@/utils/db';
+import JSZip from 'jszip';
 
 interface FileSystemStore {
   currentFolderId: number | null;
   selectedFileId: number | null;
-  
+
   setCurrentFolder: (id: number | null) => void;
   setSelectedFile: (id: number | null) => void;
-  
+
   createFile: (name: string, content: string, parentId: number | null) => Promise<number>;
   createFolder: (name: string, parentId: number | null) => Promise<number>;
   readFile: (id: number) => Promise<FileItem | undefined>;
@@ -15,6 +16,8 @@ interface FileSystemStore {
   deleteFile: (id: number) => Promise<void>;
   getFiles: (parentId: number | null) => Promise<FileItem[]>;
   searchFiles: (query: string) => Promise<FileItem[]>;
+  exportToZip: (folderId: number | null) => Promise<Blob>;
+  importFromZip: (file: File, parentId: number | null) => Promise<void>;
 }
 
 export const useFileSystemStore = create<FileSystemStore>((set) => ({
@@ -84,5 +87,41 @@ export const useFileSystemStore = create<FileSystemStore>((set) => ({
         file.name.toLowerCase().includes(query.toLowerCase()) ||
         (file.content && file.content.toLowerCase().includes(query.toLowerCase()))
     );
+  },
+
+  exportToZip: async (folderId) => {
+    const zip = new JSZip();
+    const files = await db.files.where('parentId').equals(folderId).toArray();
+
+    for (const file of files) {
+      if (file.type === 'file' && file.content) {
+        zip.file(file.name, file.content);
+      } else if (file.type === 'folder') {
+        // Recursive export not implemented for simplicity in this version
+        // Ideally we would recursively add folders
+        zip.folder(file.name);
+      }
+    }
+
+    return await zip.generateAsync({ type: 'blob' });
+  },
+
+  importFromZip: async (file, parentId) => {
+    const zip = await JSZip.loadAsync(file);
+
+    zip.forEach(async (relativePath, zipEntry) => {
+      if (!zipEntry.dir) {
+        const content = await zipEntry.async('string');
+        await db.files.add({
+          name: zipEntry.name.split('/').pop() || zipEntry.name,
+          type: 'file',
+          content,
+          parentId,
+          createdAt: new Date(),
+          modifiedAt: new Date(),
+          size: content.length,
+        });
+      }
+    });
   },
 }));

@@ -14,6 +14,8 @@ import {
   Search,
   ChevronRight,
   Home,
+  Download,
+  Upload,
 } from 'lucide-react';
 import {
   ContextMenu,
@@ -23,16 +25,18 @@ import {
 } from '@/components/ui/context-menu';
 
 export default function FileExplorerApp() {
-  const { 
-    currentFolderId, 
-    setCurrentFolder, 
-    createFile, 
-    createFolder, 
-    deleteFile, 
+  const {
+    currentFolderId,
+    setCurrentFolder,
+    createFile,
+    createFolder,
+    deleteFile,
     getFiles,
-    searchFiles 
+    searchFiles,
+    exportToZip,
+    importFromZip
   } = useFileSystemStore();
-  
+
   const [files, setFiles] = useState<FileItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedItem, setSelectedItem] = useState<number | null>(null);
@@ -137,6 +141,46 @@ export default function FileExplorerApp() {
           <Plus className="w-4 h-4 mr-2" />
           New File
         </Button>
+        <div className="h-6 w-px bg-white/10 mx-2" />
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={async () => {
+            const blob = await exportToZip(currentFolderId);
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'files.zip';
+            a.click();
+            URL.revokeObjectURL(url);
+          }}
+          className="text-white hover:bg-white/10"
+        >
+          <Download className="w-4 h-4 mr-2" />
+          Export
+        </Button>
+        <div className="relative">
+          <input
+            type="file"
+            accept=".zip"
+            className="absolute inset-0 opacity-0 cursor-pointer"
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                await importFromZip(file, currentFolderId);
+                loadFiles();
+              }
+            }}
+          />
+          <Button
+            size="sm"
+            variant="ghost"
+            className="text-white hover:bg-white/10"
+          >
+            <Upload className="w-4 h-4 mr-2" />
+            Import
+          </Button>
+        </div>
         <div className="flex-1" />
         <div className="relative w-64">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
@@ -171,9 +215,8 @@ export default function FileExplorerApp() {
             <ContextMenu key={file.id}>
               <ContextMenuTrigger>
                 <div
-                  className={`flex flex-col items-center gap-2 p-4 rounded-lg cursor-pointer hover:bg-white/5 transition-colors ${
-                    selectedItem === file.id ? 'bg-white/10' : ''
-                  }`}
+                  className={`flex flex-col items-center gap-2 p-4 rounded-lg cursor-pointer hover:bg-white/5 transition-colors ${selectedItem === file.id ? 'bg-white/10' : ''
+                    }`}
                   onClick={() => setSelectedItem(file.id || null)}
                   onDoubleClick={() => {
                     if (file.type === 'folder') {

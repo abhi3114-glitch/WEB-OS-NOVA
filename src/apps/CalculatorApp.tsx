@@ -18,15 +18,15 @@ export default function CalculatorApp() {
 
   const handleOperation = (op: string) => {
     const current = parseFloat(display);
-    
+
     if (previousValue === null) {
       setPreviousValue(current);
     } else if (operation) {
       const result = calculate(previousValue, current, operation);
-      setDisplay(result.toString());
+      setDisplay(String(result));
       setPreviousValue(result);
     }
-    
+
     setOperation(op);
     setNewNumber(true);
   };
@@ -36,7 +36,7 @@ export default function CalculatorApp() {
       case '+': return a + b;
       case '-': return a - b;
       case '×': return a * b;
-      case '÷': return a / b;
+      case '÷': return b !== 0 ? a / b : 0;
       case '%': return a % b;
       default: return b;
     }
@@ -46,7 +46,7 @@ export default function CalculatorApp() {
     if (operation && previousValue !== null) {
       const current = parseFloat(display);
       const result = calculate(previousValue, current, operation);
-      setDisplay(result.toString());
+      setDisplay(String(result));
       setPreviousValue(null);
       setOperation(null);
       setNewNumber(true);
@@ -61,10 +61,26 @@ export default function CalculatorApp() {
   };
 
   const handleDecimal = () => {
-    if (!display.includes('.')) {
-      setDisplay(display + '.');
+    if (newNumber) {
+      setDisplay('0.');
       setNewNumber(false);
+    } else if (!display.includes('.')) {
+      setDisplay(display + '.');
     }
+  };
+
+  const handleBackspace = () => {
+    if (display.length > 1) {
+      setDisplay(display.slice(0, -1));
+    } else {
+      setDisplay('0');
+      setNewNumber(true);
+    }
+  };
+
+  const handleSign = () => {
+    const num = parseFloat(display);
+    setDisplay(String(num * -1));
   };
 
   const buttonClass = "h-14 text-lg font-medium rounded-xl transition-all hover:scale-105";
@@ -77,7 +93,7 @@ export default function CalculatorApp() {
       {/* Display */}
       <div className="mb-6 p-6 bg-white/5 rounded-2xl border border-white/10">
         <div className="text-right">
-          <div className="text-white/40 text-sm mb-1">
+          <div className="text-white/40 text-sm mb-1 h-6">
             {previousValue !== null && operation ? `${previousValue} ${operation}` : ''}
           </div>
           <div className="text-white text-4xl font-bold truncate">
@@ -89,8 +105,8 @@ export default function CalculatorApp() {
       {/* Buttons */}
       <div className="grid grid-cols-4 gap-3 flex-1">
         <Button onClick={handleClear} className={specialClass}>AC</Button>
-        <Button onClick={() => handleOperation('%')} className={specialClass}>%</Button>
-        <Button onClick={() => setDisplay((parseFloat(display) * -1).toString())} className={specialClass}>+/-</Button>
+        <Button onClick={handleBackspace} className={specialClass}>⌫</Button>
+        <Button onClick={handleSign} className={specialClass}>+/-</Button>
         <Button onClick={() => handleOperation('÷')} className={operatorClass}>÷</Button>
 
         <Button onClick={() => handleNumber('7')} className={numberClass}>7</Button>

@@ -1,302 +1,240 @@
-# 🚀 WebOS Nova
+# WebOS Nova
 
-A modern, browser-based operating system built with cutting-edge web technologies. Experience a fully functional desktop environment right in your browser with draggable windows, file management, built-in applications, and PWA support.
+A modern, feature-rich web-based operating system built with React, TypeScript, and Vite. WebOS Nova delivers a complete desktop experience directly in your browser, featuring 25+ fully functional applications, AI-powered assistance, and a beautiful, responsive interface.
 
-![WebOS Nova](./public/assets/welcome-banner.jpg)
+## Features
 
-## ✨ Features
+### Core System
+- **Desktop Environment**: Full-featured desktop with draggable windows, taskbar, and start menu
+- **Window Management**: Minimize, maximize, close, and drag windows with smooth animations
+- **Lock Screen**: Secure boot screen with customizable user profile and wallpaper
+- **Settings Panel**: Comprehensive system settings including themes and wallpaper customization
+- **Virtual Desktops**: Multiple desktop workspaces for better organization
+- **AI Copilot**: Integrated AI assistant powered by Groq (Llama 3.3 70B) for natural language interactions
 
-### 🖥️ Desktop Experience
-- **Full Desktop Environment** - Complete OS experience in your browser
-- **Boot Animation** - Stunning startup sequence with progress bar and particle effects
-- **Dynamic Wallpapers** - Multiple beautiful wallpapers with parallax effects
-- **Context Menus** - Right-click functionality for desktop and files
+### Applications
 
-### 🪟 Window Management
-- **Draggable Windows** - Move windows anywhere on the screen
-- **Resizable Windows** - Resize from any edge or corner
-- **Minimize/Maximize** - Full window state management
-- **Multi-Window Support** - Run multiple applications simultaneously
-- **Z-Index Management** - Automatic focus and layering
-- **Snap-to-Edges** - Windows snap to screen edges for easy organization
+#### Productivity
+- **Notes**: Rich text note-taking application with local storage
+- **Code Editor**: Monaco-based code editor with syntax highlighting for multiple languages
+- **Markdown Editor**: Live preview markdown editor
+- **Calculator**: Full-featured calculator with standard operations
+- **Calendar**: Interactive calendar with event management
+- **To-Do List**: Task management with categories and priorities
 
-### 📁 File System
-- **IndexedDB Storage** - Persistent file storage using Dexie
-- **File Operations** - Create, read, update, and delete files
-- **Folder Management** - Organize files in nested folders
-- **Search Functionality** - Quick file and content search
-- **File Preview** - Preview text files and images
+#### Communication & Media
+- **Chat**: Real-time messaging application
+- **Spotify**: Embedded Spotify web player integration
+- **Video Player**: Media player with playlist support
+- **Image Viewer**: Gallery-style image viewer with zoom and slideshow
 
-### 🎯 Built-in Applications
+#### Utilities
+- **File Explorer**: File system browser with folder navigation
+- **Weather**: Live weather data powered by OpenWeatherMap API
+- **Maps**: Interactive maps powered by Leaflet and OpenStreetMap
+- **Clock**: World clock with multiple timezone support
+- **Screenshot**: Screen capture tool
+- **Camera**: Webcam access with photo capture
+- **Voice Recorder**: Audio recording with playback and download
 
-#### 📝 Notes
-- Rich text editor with auto-save
-- Create and manage multiple notes
-- Persistent storage
+#### Creative Tools
+- **Paint**: Canvas-based drawing application with brush tools and color picker
+- **PDF Viewer**: Upload and view PDF documents
 
-#### 🧮 Calculator
-- Standard calculator operations
-- Keyboard support
-- Memory functions
-- Beautiful gradient UI
+#### Internet & System
+- **Browser**: Embedded web browser with URL navigation
+- **Terminal**: Command-line interface (demo)
+- **App Store**: Browse and install applications
 
-#### 💻 Terminal
-- xterm.js powered terminal
-- Mock shell with common commands
-- Command history (Arrow Up/Down)
-- File system integration
-- Custom neon theme
-
-#### 📂 File Explorer
-- Three-pane layout
-- Breadcrumb navigation
-- File operations toolbar
-- Context menu support
-- Search functionality
-
-#### ✅ Todo
-- Task management with checkboxes
-- Priority levels (High, Medium, Low)
-- Filter by status (All, Active, Completed)
-- Local storage persistence
-
-### 🎨 Customization
-- **Themes** - Light, Dark, and Glass themes
-- **Accent Colors** - Choose from 6 vibrant accent colors
-- **Wallpaper Manager** - Multiple wallpapers to choose from
-- **Settings Panel** - Comprehensive customization options
-
-### 🔔 System Features
-- **Taskbar** - Shows running apps with active indicators
-- **Start Menu** - Quick access to all applications
-- **System Tray** - Network, battery, and user info
-- **Notifications** - Toast notifications with history
-- **Command Palette** - Quick actions with Ctrl+K
-
-### 📱 PWA Support
-- **Installable** - Install as a standalone app
-- **Offline Support** - Works without internet connection
-- **Service Worker** - Caching for optimal performance
-
-## 🛠️ Tech Stack
+## Technology Stack
 
 ### Frontend
-- **React 19** - Latest React with TypeScript
-- **Vite** - Lightning-fast build tool
-- **Tailwind CSS** - Utility-first CSS framework
-- **shadcn/ui** - Beautiful, accessible components
-- **Framer Motion** - Smooth animations and transitions
+- **React 18**: Modern UI framework with hooks
+- **TypeScript**: Type-safe development
+- **Vite**: Fast build tool and dev server
+- **Tailwind CSS**: Utility-first CSS framework
+- **Framer Motion**: Smooth animations and transitions
+- **Zustand**: Lightweight state management
 
-### State Management
-- **Zustand** - Lightweight state management
-- **Persist Middleware** - Settings persistence
+### Key Libraries
+- **Monaco Editor**: VS Code-based code editor
+- **Leaflet**: Interactive maps
+- **React-PDF**: PDF rendering
+- **Dexie**: IndexedDB wrapper for local storage
+- **Lucide React**: Beautiful icon library
 
-### Storage & Data
-- **Dexie** - IndexedDB wrapper for file system
-- **LocalStorage** - Quick data persistence
+### APIs & Services
+- **Groq API**: AI assistant (Llama 3.3 70B)
+- **OpenWeatherMap**: Weather data
+- **OpenStreetMap**: Map tiles
+- **Spotify Web Player**: Music streaming
 
-### UI Libraries
-- **Radix UI** - Accessible component primitives
-- **Lucide React** - Beautiful icon set
-- **xterm.js** - Terminal emulation
-
-### Development Tools
-- **TypeScript** - Type safety
-- **ESLint** - Code linting
-- **Prettier** - Code formatting
-- **Husky** - Git hooks
-- **Playwright** - E2E testing
-
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
-- pnpm 8+ (recommended) or npm/yarn
+- Node.js 18+ and npm
+- Modern web browser (Chrome, Firefox, Edge, Safari)
 
 ### Installation
 
+1. Clone the repository:
 ```bash
-# Clone the repository
-git clone https://github.com/abhi3114-glitch/WEB-OS-NOVA.git
+git clone https://github.com/yourusername/WEB-OS-NOVA.git
 cd WEB-OS-NOVA
-
-# Install dependencies
-pnpm install
-
-# Start development server
-pnpm run dev
 ```
 
-The application will be available at `http://localhost:5173`
+2. Install dependencies:
+```bash
+npm install
+```
 
-### Build for Production
+3. Set up environment variables:
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and add your API keys:
+```
+VITE_OPENWEATHER_API_KEY=your_openweathermap_key
+VITE_GROQ_API_KEY=your_groq_api_key
+```
+
+4. Start the development server:
+```bash
+npm run dev
+```
+
+5. Open your browser and navigate to `http://localhost:5173`
+
+### Building for Production
 
 ```bash
-# Create production build
-pnpm run build
-
-# Preview production build
-pnpm run preview
+npm run build
 ```
 
-## 📜 Available Scripts
+The production build will be created in the `dist` directory.
 
-| Command | Description |
-|---------|-------------|
-| `pnpm run dev` | Start development server |
-| `pnpm run build` | Build for production |
-| `pnpm run preview` | Preview production build |
-| `pnpm run lint` | Run ESLint |
-| `pnpm run test` | Run unit tests |
-| `pnpm run e2e` | Run E2E tests |
-
-## 🎮 Usage
-
-### Keyboard Shortcuts
-
-| Shortcut | Action |
-|----------|--------|
-| `Ctrl+K` | Open Command Palette |
-| `Ctrl+N` | New File |
-| `Ctrl+Shift+N` | New Folder |
-| `Alt+Tab` | Switch Windows |
-| `Win` | Open Start Menu |
-| `Ctrl+Q` | Close Window |
-| `F11` | Toggle Fullscreen |
-
-### Desktop Interactions
-- **Double-click** desktop icons to open applications
-- **Right-click** desktop for context menu
-- **Drag** windows to move them
-- **Resize** windows from edges or corners
-- **Click** taskbar icons to focus/restore windows
-
-### Terminal Commands
-```bash
-help       # Show available commands
-ls         # List files in current directory
-cd         # Change directory
-cat        # Display file contents
-clear      # Clear terminal screen
-echo       # Print text to terminal
-date       # Show current date and time
-whoami     # Display current user
-```
-
-## 🏗️ Project Structure
+## Project Structure
 
 ```
-webos-nova/
-├── public/
-│   └── assets/
-│       ├── boot-logo.png
-│       ├── wallpaper-*.jpg
-│       └── app-icon-*.png
+WEB-OS-NOVA/
 ├── src/
-│   ├── apps/                 # Built-in applications
-│   │   ├── CalculatorApp.tsx
-│   │   ├── NotesApp.tsx
-│   │   ├── TerminalApp.tsx
-│   │   ├── FileExplorerApp.tsx
-│   │   └── TodoApp.tsx
-│   ├── components/           # UI components
-│   │   ├── BootScreen.tsx
-│   │   ├── Desktop.tsx
-│   │   ├── Window.tsx
-│   │   ├── Taskbar.tsx
-│   │   ├── StartMenu.tsx
-│   │   └── ui/              # shadcn/ui components
-│   ├── stores/              # Zustand stores
-│   │   ├── windowStore.ts
-│   │   ├── fileSystemStore.ts
-│   │   ├── settingsStore.ts
-│   │   └── notificationStore.ts
-│   ├── utils/               # Utilities
-│   │   ├── db.ts           # Dexie database
-│   │   └── constants.ts    # App constants
-│   ├── pages/              # Route pages
-│   │   └── Index.tsx
-│   ├── App.tsx
-│   └── main.tsx
-├── package.json
-├── vite.config.ts
-├── tailwind.config.ts
-└── tsconfig.json
+│   ├── apps/              # Individual application components
+│   ├── components/        # Reusable UI components
+│   │   ├── ui/           # shadcn/ui components
+│   │   ├── Desktop.tsx   # Desktop environment
+│   │   ├── Window.tsx    # Window manager
+│   │   ├── Taskbar.tsx   # Bottom taskbar
+│   │   └── ...
+│   ├── stores/           # Zustand state stores
+│   │   ├── appStore.ts   # Application registry
+│   │   ├── windowStore.ts # Window management
+│   │   └── settingsStore.ts # User settings
+│   ├── pages/            # Main page components
+│   ├── App.tsx           # Root component
+│   └── main.tsx          # Entry point
+├── public/               # Static assets
+│   └── assets/          # Images and icons
+├── .env.example         # Environment template
+└── package.json         # Dependencies
 ```
 
-## 🎨 Design System
+## Configuration
 
-### Color Palette
-- **Primary Background**: `#0A0A0A` (Deep Black)
-- **Secondary Background**: `#1A1A1A` (Charcoal)
-- **Accent Pink**: `#FF006E` (Neon Pink)
-- **Accent Teal**: `#00F5FF` (Neon Teal)
-- **Text Primary**: `#FFFFFF` (White)
-- **Text Secondary**: `#B0B0B0` (Light Gray)
+### API Keys
 
-### Typography
-- **Font Family**: Inter (UI), JetBrains Mono (Code)
-- **Heading 1**: 48px, Bold
-- **Heading 2**: 36px, Semi-bold
-- **Body**: 14px, Regular
+The application requires the following API keys for full functionality:
 
-### Animations
-- **Spring Physics**: stiffness: 300, damping: 25
-- **Glassmorphism**: backdrop-blur-xl with transparency
-- **Transitions**: Smooth 300ms ease-out
+1. **OpenWeatherMap API** (Weather App)
+   - Sign up at https://openweathermap.org/api
+   - Free tier provides 60 calls/minute
+   
+2. **Groq API** (AI Copilot)
+   - Get your key at https://console.groq.com/keys
+   - Free tier with generous rate limits
 
-## 🔧 Configuration
+Add these keys to your `.env` file as shown in the installation steps.
 
-### Environment Variables
+### Customization
 
-Create a `.env` file in the root directory:
+#### User Profile
+Replace `public/assets/profile.png` with your own profile picture to customize the lock screen.
 
-```env
-# AI Copilot API Key (optional)
-VITE_COPILOT_API_KEY=your_api_key_here
+#### Wallpapers
+Add custom wallpapers to `public/wallpapers/` and they will appear in the settings panel.
 
-# Other optional configurations
-VITE_APP_NAME=WebOS Nova
-VITE_APP_VERSION=1.0.0
+## Development
+
+### Code Style
+- TypeScript strict mode enabled
+- ESLint for code quality
+- Component-based architecture
+- Hooks for state management
+
+### State Management
+- **appStore**: Manages installed applications and pinned items
+- **windowStore**: Controls window positions, states, and focus
+- **settingsStore**: Handles user preferences and system settings
+- **fileSystemStore**: File system data using IndexedDB
+
+### Adding New Applications
+
+1. Create a new component in `src/apps/YourApp.tsx`
+2. Add the app to `INITIAL_APPS` in `src/stores/appStore.ts`
+3. Register the component in `getAppContent()` in `src/pages/Index.tsx`
+
+Example:
+```typescript
+// In appStore.ts
+{
+  id: 'your-app',
+  name: 'Your App',
+  description: 'Description of your app',
+  icon: YourIcon,
+  category: 'Productivity',
+  rating: 4.5,
+  installed: true,
+}
+
+// In Index.tsx
+case 'your-app':
+  return <YourApp />;
 ```
 
-## 🚢 Deployment
+## Browser Compatibility
 
-### Deploy to Vercel
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/abhi3114-glitch/WEB-OS-NOVA)
+**Note**: Some features require specific browser APIs:
+- Camera app requires `getUserMedia()` API
+- Screenshot app requires `getDisplayMedia()` API
+- Voice Recorder requires `MediaRecorder` API
 
-```bash
-# Install Vercel CLI
-npm i -g vercel
+## Performance
 
-# Deploy
-vercel
-```
+- Lazy loading for application components
+- Virtual desktop rendering
+- Optimized state updates with Zustand
+- Window virtualization for memory efficiency
 
-### Deploy to Netlify
+## Security Considerations
 
-```bash
-# Build the project
-pnpm run build
+- Environment variables for API keys (never commit `.env`)
+- Client-side only - no backend server required
+- CORS-aware proxy for external content
+- Sandboxed iframe for browser app
 
-# Deploy dist folder to Netlify
-netlify deploy --prod --dir=dist
-```
+## Known Limitations
 
-## 🧪 Testing
+- File system is browser-based (IndexedDB) - not persistent across domains
+- Some websites block iframe embedding in the browser app
+- Camera and microphone require explicit user permission
+- Weather API has rate limits on free tier
 
-### Unit Tests
-```bash
-pnpm run test
-```
-
-### E2E Tests
-```bash
-pnpm run e2e
-```
-
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please follow these steps:
 
@@ -306,67 +244,34 @@ Contributions are welcome! Please follow these steps:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-### Development Guidelines
-- Follow TypeScript best practices
-- Use ESLint and Prettier for code formatting
-- Write meaningful commit messages
-- Add tests for new features
-- Update documentation as needed
+## License
 
-## 📝 License
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Acknowledgments
 
-## 🙏 Acknowledgments
+- UI components built with shadcn/ui
+- Icons by Lucide
+- Inspired by Windows 11 and macOS design languages
+- Built with modern web technologies
 
-- [React](https://react.dev/) - UI framework
-- [Vite](https://vitejs.dev/) - Build tool
-- [Tailwind CSS](https://tailwindcss.com/) - CSS framework
-- [shadcn/ui](https://ui.shadcn.com/) - Component library
-- [Framer Motion](https://www.framer.com/motion/) - Animation library
-- [Zustand](https://zustand-demo.pmnd.rs/) - State management
-- [Dexie](https://dexie.org/) - IndexedDB wrapper
-- [xterm.js](https://xtermjs.org/) - Terminal emulator
+## Support
 
-## 📧 Contact
+For issues, questions, or suggestions:
+- Open an issue on GitHub
+- Check existing documentation
+- Review the code examples in `/src/apps`
 
-**Project Link**: [https://github.com/abhi3114-glitch/WEB-OS-NOVA](https://github.com/abhi3114-glitch/WEB-OS-NOVA)
+## Roadmap
 
-## 🗺️ Roadmap
-
-- [ ] AI Copilot integration with OpenAI
-- [ ] App Store with installable apps
-- [ ] Multi-user support with authentication
-- [ ] Cloud sync for files and settings
-- [ ] Real-time collaboration features
-- [ ] More built-in applications (Music Player, Video Player, etc.)
-- [ ] Plugin system for third-party apps
-- [ ] Mobile responsive design
-- [ ] Internationalization (i18n) support
-- [ ] Dark/Light theme auto-switching
-
-## 📊 Performance
-
-- **Lighthouse Score**: 90+
-- **First Contentful Paint**: < 1.5s
-- **Time to Interactive**: < 3.5s
-- **Bundle Size**: ~1MB (gzipped: ~310KB)
-
-## 🐛 Known Issues
-
-- Window resize may lag on older devices
-- Terminal doesn't support all UNIX commands
-- File system limited to browser storage quota
-
-## 💡 Tips
-
-- Use Chrome or Edge for best performance
-- Install as PWA for native app experience
-- Enable hardware acceleration in browser settings
-- Clear browser cache if experiencing issues
+Future enhancements planned:
+- Cloud storage integration
+- Multi-user support
+- Plugin system for third-party apps
+- Mobile-responsive design
+- Offline mode with service workers
+- Customizable themes and color schemes
 
 ---
 
-Made with ❤️ by the WebOS Nova Team
-
-**Star ⭐ this repository if you find it useful!**
+Built with React, TypeScript, and modern web technologies.

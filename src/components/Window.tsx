@@ -47,6 +47,21 @@ export default function Window({ window, children }: WindowProps) {
             y: window.position.y + event.dy,
           });
         },
+        end(event) {
+          const screenWidth = window.innerWidth;
+          const { clientX } = event;
+
+          // Simple snapping logic
+          if (clientX < 20) {
+            // Snap Left
+            updateWindowPosition(window.id, { x: 0, y: 0 });
+            updateWindowSize(window.id, { width: screenWidth / 2, height: window.innerHeight - 48 });
+          } else if (clientX > screenWidth - 20) {
+            // Snap Right
+            updateWindowPosition(window.id, { x: screenWidth / 2, y: 0 });
+            updateWindowSize(window.id, { width: screenWidth / 2, height: window.innerHeight - 48 });
+          }
+        }
       },
     });
 
@@ -106,9 +121,8 @@ export default function Window({ window, children }: WindowProps) {
       animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 0.9, opacity: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-      className={`fixed rounded-2xl overflow-hidden shadow-2xl ${
-        isActive ? 'ring-2 ring-[#FF006E]' : ''
-      }`}
+      className={`fixed rounded-2xl overflow-hidden shadow-2xl ${isActive ? 'ring-2 ring-[#FF006E]' : ''
+        }`}
       style={{
         left: window.isMaximized ? 0 : window.position.x,
         top: window.isMaximized ? 0 : window.position.y,

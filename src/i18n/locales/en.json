@@ -1,0 +1,13 @@
+{
+    "welcome": "Welcome to WebOS Nova",
+    "start": "Start",
+    "search": "Search apps...",
+    "settings": "Settings",
+    "apps": {
+        "notes": "Notes",
+        "calculator": "Calculator",
+        "terminal": "Terminal",
+        "files": "File Explorer",
+        "browser": "Browser"
+    }
+}

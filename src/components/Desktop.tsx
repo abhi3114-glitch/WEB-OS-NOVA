@@ -1,6 +1,6 @@
 import { useSettingsStore } from '@/stores/settingsStore';
 import { useWindowStore } from '@/stores/windowStore';
-import { APPS } from '@/utils/constants';
+import { useAppStore } from '@/stores/appStore';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import {
@@ -10,14 +10,23 @@ import {
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
 import { FileText, Folder, Settings, Trash2 } from 'lucide-react';
+import CalendarWidget from '@/components/widgets/CalendarWidget';
+import WeatherWidget from '@/components/widgets/WeatherWidget';
+import NotesWidget from '@/components/widgets/NotesWidget';
+import WeatherWidget from '@/components/widgets/WeatherWidget';
+import NotesWidget from '@/components/widgets/NotesWidget';
 
 export default function Desktop() {
   const { wallpaper } = useSettingsStore();
   const { openWindow } = useWindowStore();
+  const { apps } = useAppStore();
   const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
 
+  // Filter for installed apps to show on desktop
+  const desktopApps = apps.filter(app => app.installed);
+
   const handleDoubleClick = (appId: string) => {
-    const app = APPS.find((a) => a.id === appId);
+    const app = apps.find((a) => a.id === appId);
     if (app) {
       openWindow(app.id, app.name, app.icon);
     }
@@ -44,7 +53,7 @@ export default function Desktop() {
 
           {/* Desktop Icons Grid */}
           <div className="absolute top-8 left-8 grid grid-cols-1 gap-6 w-[120px]">
-            {APPS.slice(0, 4).map((app, index) => (
+            {desktopApps.map((app, index) => (
               <motion.div
                 key={app.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -53,18 +62,19 @@ export default function Desktop() {
                 onDoubleClick={() => handleDoubleClick(app.id)}
                 className="flex flex-col items-center gap-2 p-3 rounded-lg cursor-pointer hover:bg-white/10 transition-colors group"
               >
-                <div className="w-16 h-16 rounded-xl overflow-hidden shadow-lg group-hover:scale-110 transition-transform">
-                  <img
-                    src={app.icon}
-                    alt={app.name}
-                    className="w-full h-full object-cover"
-                  />
+                <div className="text-4xl drop-shadow-lg group-hover:scale-110 transition-transform">
+                  {app.icon}
                 </div>
-                <span className="text-white text-sm font-medium text-center drop-shadow-lg">
+                <span className="text-white text-sm font-medium text-center drop-shadow-lg bg-black/20 px-2 rounded-md">
                   {app.name}
                 </span>
               </motion.div>
             ))}
+          </div>
+
+          {/* Widgets Area */}
+          <div className="absolute top-8 right-8 flex flex-col gap-6">
+            <CalendarWidget />
           </div>
         </div>
       </ContextMenuTrigger>

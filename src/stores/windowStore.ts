@@ -11,6 +11,7 @@ export interface WindowState {
   isMinimized: boolean;
   isMaximized: boolean;
   zIndex: number;
+  desktopId: number; // Added for Virtual Desktops
   content?: React.ReactNode;
 }
 
@@ -18,7 +19,8 @@ interface WindowStore {
   windows: WindowState[];
   activeWindowId: string | null;
   maxZIndex: number;
-  
+  currentDesktop: number; // Added for Virtual Desktops
+
   openWindow: (appId: string, title: string, icon?: string, content?: React.ReactNode) => string;
   closeWindow: (id: string) => void;
   minimizeWindow: (id: string) => void;
@@ -27,30 +29,34 @@ interface WindowStore {
   focusWindow: (id: string) => void;
   updateWindowPosition: (id: string, position: { x: number; y: number }) => void;
   updateWindowSize: (id: string, size: { width: number; height: number }) => void;
+  switchDesktop: (desktopId: number) => void; // Added for Virtual Desktops
+  moveWindowToDesktop: (windowId: string, desktopId: number) => void; // Added for Virtual Desktops
 }
 
 export const useWindowStore = create<WindowStore>((set, get) => ({
   windows: [],
   activeWindowId: null,
   maxZIndex: 1000,
+  currentDesktop: 0,
 
   openWindow: (appId, title, icon, content) => {
     const id = uuidv4();
     const newZIndex = get().maxZIndex + 1;
-    
+
     const newWindow: WindowState = {
       id,
       appId,
       title,
       icon,
-      position: { 
-        x: 100 + (get().windows.length * 30), 
-        y: 100 + (get().windows.length * 30) 
+      position: {
+        x: 100 + (get().windows.length * 30),
+        y: 100 + (get().windows.length * 30)
       },
       size: { width: 800, height: 600 },
       isMinimized: false,
       isMaximized: false,
       zIndex: newZIndex,
+      desktopId: get().currentDesktop, // Open in current desktop
       content,
     };
 
@@ -119,6 +125,18 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
     set({
       windows: get().windows.map((w) =>
         w.id === id ? { ...w, size } : w
+      ),
+    });
+  },
+
+  switchDesktop: (desktopId) => {
+    set({ currentDesktop: desktopId });
+  },
+
+  moveWindowToDesktop: (windowId, desktopId) => {
+    set({
+      windows: get().windows.map((w) =>
+        w.id === windowId ? { ...w, desktopId } : w
       ),
     });
   },
